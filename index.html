@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
+  --header-h:73px;
   --paper:#efe8db; --paper2:#e6ddcb; --ink:#241c14; --ink-soft:#5a5044;
   --olive:#586b3f; --olive-deep:#3f4f2c; --cherry:#a5443a;
   --line: rgba(36,28,20,0.14);
@@ -17,11 +18,12 @@
 }
 :root[data-theme="dark"]{ --paper:#241c14; --paper2:#2d241a; --ink:#efe8db; --ink-soft:#c9bfae; --line: rgba(239,232,219,0.16); }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth; scroll-padding-top:76px}
+html{scroll-behavior:smooth; scroll-padding-top:var(--header-h,73px)}
 body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:'Work Sans',sans-serif; line-height:1.55;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:calc(48px + env(safe-area-inset-bottom,0px));
+  overflow-x:hidden;
 }
 h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; margin:0; letter-spacing:-0.01em}
 p{margin:0}
@@ -31,11 +33,13 @@ img{max-width:100%; display:block}
 
 /* HEADER */
 header{
-  position:sticky; top:0; z-index:40; background:color-mix(in srgb, var(--paper) 88%, transparent);
+  position:sticky; top:0; z-index:40; background:color-mix(in srgb, var(--paper) 95%, transparent);
   backdrop-filter:blur(8px); border-bottom:1px solid var(--line);
-  padding-top:env(safe-area-inset-top,0px);
+  padding-top:env(safe-area-inset-top,0px); transition:box-shadow .3s ease;
 }
-.nav{display:flex; align-items:center; justify-content:space-between; padding:16px clamp(20px,5vw,56px)}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:16px clamp(20px,5vw,56px); transition:padding .3s ease}
+header.compact .nav{padding-top:10px; padding-bottom:10px}
+header.compact{box-shadow:0 1px 0 var(--line)}
 .brand{font-family:'Fraunces',serif; font-size:1.25rem; font-weight:600; text-decoration:none}
 .brand em{font-style:italic; color:var(--olive)}
 .nav-links{display:flex; gap:28px; list-style:none; margin:0; padding:0}
@@ -52,12 +56,14 @@ header{
 }
 
 /* HERO */
-.hero{position:relative; padding:56px 0 0}
+.hero{position:relative; padding:56px 0 64px}
 .hero-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:clamp(24px,4vw,60px); align-items:center}
-.hero-eyebrow{color:var(--olive); font-size:0.98rem; margin-bottom:14px}
-.hero h1{font-size:clamp(2.6rem,6vw,4.4rem); line-height:0.98}
+.hero-eyebrow{color:var(--olive); font-size:0.98rem; margin-bottom:14px; text-transform:uppercase; letter-spacing:.08em}
+.hero h1{font-size:clamp(2.6rem,6vw,4.4rem); line-height:1.06}
 .hero h1 i{font-style:italic; color:var(--cherry)}
-.hero p.lead{margin-top:20px; max-width:46ch; color:var(--ink-soft); font-size:1.08rem}
+.hero p.lead{margin-top:22px; max-width:46ch; font-family:'Fraunces',serif; font-size:1.2rem; color:var(--cherry)}
+.hero p.lead em{font-style:italic}
+.hero p.lead-desc{margin-top:12px; max-width:46ch; color:var(--ink-soft); font-size:1.05rem}
 .hero-actions{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap}
 .btn{display:inline-flex; align-items:center; gap:8px; padding:13px 24px; border-radius:999px; text-decoration:none; font-size:0.98rem; border:1px solid transparent; cursor:pointer; font-family:inherit}
 .btn-solid{background:var(--ink); color:var(--paper)}
@@ -76,12 +82,26 @@ section{padding:88px 0}
 
 /* STORY */
 .story{background:var(--paper2); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
-.story-grid{display:grid; grid-template-columns:0.85fr 1.15fr; gap:clamp(28px,5vw,64px); align-items:center}
-.story-grid img{border-radius:16px; aspect-ratio:3/4; object-fit:cover}
-.story-copy p{color:var(--ink-soft); margin-top:16px; max-width:52ch}
+.story-pin{position:relative; height:340vh}
+.story-media, .story-copy{position:sticky; top:var(--header-h); height:calc(100vh - var(--header-h)); display:flex; align-items:center}
+.story-media{width:46%; float:left}
+.story-copy{width:54%; float:right; flex-direction:column; align-items:flex-start; padding-right:clamp(20px,5vw,56px)}
+.story-frame{position:absolute; inset:0; margin:auto; width:min(86%,460px); aspect-ratio:3/4; object-fit:cover; border-radius:16px; opacity:0; transform:scale(1.05); transition:opacity .6s ease, transform .8s ease}
+.story-frame.f1{opacity:1; transform:scale(1)}
+.story-line{max-width:46ch; color:var(--ink-soft); font-size:1.08rem; opacity:.25; transition:opacity .5s ease}
+.story-line.s1{font-family:'Fraunces',serif; font-size:clamp(1.7rem,3vw,2.3rem); color:var(--ink); opacity:1}
+.story-line + .story-line{margin-top:14px}
 .hours{margin-top:26px; display:flex; flex-direction:column; gap:8px}
 .hours .row{display:flex; justify-content:space-between; max-width:320px; padding:8px 0; border-top:1px solid var(--line); font-size:0.95rem}
 .hours .row:last-child{border-bottom:1px solid var(--line)}
+
+/* BIG TYPE — one typographic moment between hero and story */
+.big-type{position:relative; height:260vh; background:var(--ink)}
+.big-type-line{position:sticky; top:var(--header-h); height:calc(100vh - var(--header-h)); display:flex; align-items:center; justify-content:center; margin:0;
+  font-family:'Fraunces',serif; font-style:italic; color:var(--paper); font-size:clamp(3rem,10vw,7rem);
+  text-align:center; padding:0 24px; line-height:1.05;
+  opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease}
+.big-type-line.on{opacity:1; transform:none}
 
 /* MENU */
 .menu-layout{display:grid; grid-template-columns:220px 1fr; gap:48px}
@@ -149,7 +169,7 @@ footer{border-top:1px solid var(--line); padding:36px 0; font-size:0.9rem; color
 @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} html{scroll-behavior:auto} }
 
 /* WORD REVEAL */
-.word-wrap{overflow:hidden; display:inline-block; vertical-align:top}
+.word-wrap{overflow:hidden; display:inline-block; vertical-align:top; padding-bottom:0.15em; margin-bottom:-0.15em}
 .word{display:inline-block; opacity:0; transform:translateY(100%); transition:opacity .5s ease, transform .5s cubic-bezier(.22,.61,.36,1)}
 .words-in .word{opacity:1; transform:none}
 
@@ -189,10 +209,15 @@ footer{border-top:1px solid var(--line); padding:36px 0; font-size:0.9rem; color
   .hero-grid{grid-template-columns:1fr !important; gap:24px}
   .hero-photo{aspect-ratio:16/11 !important; order:2}
   .hero h1{font-size:clamp(2.1rem,10vw,3rem) !important}
-  .hero p.lead{max-width:none}
+  .hero p.lead, .hero p.lead-desc{max-width:none}
   section{padding:52px 0}
-  .story-grid{grid-template-columns:1fr !important; gap:20px}
-  .story-grid img{aspect-ratio:16/10 !important}
+  .story-pin{height:auto !important; padding:52px 0}
+  .story-media, .story-copy{position:static !important; height:auto !important; width:100% !important; float:none !important; display:block !important; padding-right:0}
+  .story-frame{position:relative !important; opacity:1 !important; transform:none !important; margin:0 0 14px; width:100%; aspect-ratio:16/10 !important}
+  .story-frame.f2{display:none}
+  .story-line{opacity:1 !important; margin-top:10px !important}
+  .big-type{height:auto !important; padding:64px 0}
+  .big-type-line{position:relative !important; height:auto !important; opacity:1 !important; transform:none !important; padding:10px clamp(20px,6vw,40px); font-size:clamp(2.2rem,11vw,3rem)}
   .contact-grid{grid-template-columns:1fr !important; gap:28px}
   .wrap{padding:0 20px}
   .secret{margin:0 20px; padding:32px 24px}
@@ -238,9 +263,10 @@ footer{border-top:1px solid var(--line); padding:36px 0; font-size:0.9rem; color
   <section class="hero" id="inicio">
     <div class="wrap hero-grid">
       <div>
-        <p class="hero-eyebrow reveal-hero">Una cafetería costarricense</p>
+        <p class="hero-eyebrow reveal-hero">Cafetería</p>
         <h1 class="split-words">Un lugar para leer<br>el día <i>despacio.</i></h1>
-        <p class="lead reveal-hero d3">Una pausa que se siente de verdad: café de origen costarricense, repostería hecha en casa y un poco de luz para compartir sin prisa.</p>
+        <p class="lead reveal-hero d3"><em>Donde cada taza llena calidez.</em></p>
+        <p class="lead-desc reveal-hero d3">Café de origen costarricense, repostería hecha en casa y un poco de luz para compartir sin prisa.</p>
         <div class="hero-actions reveal-hero d3">
           <a href="#menu" class="btn btn-solid">Ver la carta</a>
           <a href="#historia" class="btn btn-outline">Conocer la historia</a>
@@ -259,13 +285,23 @@ footer{border-top:1px solid var(--line); padding:36px 0; font-size:0.9rem; color
     </div>
   </div>
 
+  <section class="big-type" id="bigType">
+    <div class="big-type-line" data-bt>Paz.</div>
+    <div class="big-type-line" data-bt>Café.</div>
+    <div class="big-type-line" data-bt>Buenos momentos.</div>
+  </section>
+
   <section class="story" id="historia">
-    <div class="wrap story-grid">
-      <img class="parallax-img" src="images/coffee-pour.jpg" alt="Manos sirviendo café en una taza artesanal" />
+    <div class="story-pin">
+      <div class="story-media">
+        <img class="story-frame f1" src="images/coffee-pour.jpg" alt="Manos sirviendo café en una taza artesanal" />
+        <img class="story-frame f2" src="images/cafe-detail.jpg" alt="Detalles botánicos sobre una mesa" />
+      </div>
       <div class="story-copy">
         <p class="kicker">Cómo abre la casa</p>
-        <h2 class="split-words">Un ritual, no una prisa.</h2>
-        <p>Luz y Amor nació para hacer espacio a lo que importa: una conversación despacio, una taza bien hecha, una pausa que se siente de verdad. La luz entra, el café baja despacio, y siempre hay espacio para una historia más.</p>
+        <p class="story-line s1" data-sl>Un ritual, no una prisa.</p>
+        <p class="story-line s2" data-sl>Luz y Amor nació para hacer espacio a lo que importa.</p>
+        <p class="story-line s3" data-sl>La luz entra, el café baja despacio, y siempre hay espacio para una historia más.</p>
         <div class="hours">
           <div class="row"><span>Lunes a Viernes</span><span>7:00 a.m. a 7:00 p.m.</span></div>
           <div class="row"><span>Sábado y Domingo</span><span>7:00 a.m. a 6:00 p.m.</span></div>
@@ -290,11 +326,11 @@ footer{border-top:1px solid var(--line); padding:36px 0; font-size:0.9rem; color
   <div class="wrap">
     <section class="secret" id="secreto">
       <div class="section-head">
-        <p class="kicker" style="color:#c9bfae">Solo para almas bonitas</p>
-        <h2 class="split-words">¿Algo fuera de carta?</h2>
+        <p class="kicker" style="color:#c9bfae">Hay cosas que no aparecen en la carta</p>
+        <h2 class="split-words">¿Te atreves a preguntar?</h2>
         <p>Un par de cosas que no ponemos en el menú, pero que preparamos con gusto si preguntas.</p>
       </div>
-      <button class="secret-toggle" id="secretToggle">Quiero algo fuera de carta</button>
+      <button class="secret-toggle" id="secretToggle">Descubrir el secreto</button>
       <div class="secret-list" id="secretList" style="display:none"></div>
     </section>
   </div>
@@ -476,11 +512,23 @@ const io = new IntersectionObserver((entries)=>{
 }, {threshold:0.25});
 document.querySelectorAll('.section-head').forEach(el=>io.observe(el));
 
-// Scroll progress bar + light parallax
+// Scroll progress bar, header compact, big-type reveal, story pin + light parallax
 const fill = document.getElementById('scrollFill');
 const pct = document.getElementById('scrollPct');
 const parallaxEls = [...document.querySelectorAll('.parallax-img')];
+const headerEl = document.querySelector('header');
+function syncHeaderHeight(){
+  document.documentElement.style.setProperty('--header-h', headerEl.offsetHeight + 'px');
+}
+syncHeaderHeight();
+window.addEventListener('resize', syncHeaderHeight);
+const bigTypeSection = document.getElementById('bigType');
+const bigLines = [...document.querySelectorAll('[data-bt]')];
+const storyPin = document.querySelector('.story-pin');
+const storyLines = [...document.querySelectorAll('[data-sl]')];
+const storyFrames = [...document.querySelectorAll('.story-frame')];
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduceMotion){ bigLines.forEach(l=>l.classList.add('on')); }
 let ticking = false;
 function onScroll(){
   const h = document.documentElement;
@@ -488,12 +536,41 @@ function onScroll(){
   const p = Math.max(0, Math.min(1, scrolled)) * 100;
   fill.style.width = p + '%';
   pct.textContent = Math.round(p) + '%';
+  const wasCompact = headerEl.classList.contains('compact');
+  const isCompact = h.scrollTop > 40;
+  if(wasCompact !== isCompact){ headerEl.classList.toggle('compact', isCompact); syncHeaderHeight(); }
+
   if(!reduceMotion){
     parallaxEls.forEach(img=>{
       const r = img.getBoundingClientRect();
       const center = r.top + r.height/2 - window.innerHeight/2;
       img.style.transform = `translateY(${(-center*0.06).toFixed(1)}px)`;
     });
+
+    // Big type: reveal each line as its third of the section crosses center
+    if(bigTypeSection){
+      const r = bigTypeSection.getBoundingClientRect();
+      const total = r.height - window.innerHeight;
+      const local = Math.max(0, Math.min(1, -r.top / (total || 1)));
+      bigLines.forEach((l,i)=>{
+        const start = i/bigLines.length, end = (i+1)/bigLines.length;
+        l.classList.toggle('on', local >= start + 0.03 && local <= end + 0.12);
+      });
+    }
+
+    // Story: pin scroll — swap frame + progressive lines
+    if(storyPin){
+      const r = storyPin.getBoundingClientRect();
+      const total = r.height - window.innerHeight;
+      const local = Math.max(0, Math.min(1, -r.top / (total || 1)));
+      storyFrames[0]?.classList.toggle('f1-active', local < 0.5);
+      if(storyFrames[0]) storyFrames[0].style.opacity = local < 0.5 ? 1 : 0;
+      if(storyFrames[1]) storyFrames[1].style.opacity = local >= 0.5 ? 1 : 0;
+      storyLines.forEach((line,i)=>{
+        const start = i/storyLines.length;
+        line.style.opacity = local >= start ? (i===0 ? 1 : 0.95) : 0.25;
+      });
+    }
   }
   ticking = false;
 }
@@ -515,7 +592,7 @@ if(!document.getElementById('secretList').dataset.filled){
 document.getElementById('secretToggle').onclick = function(){
   const list = document.getElementById('secretList');
   const open = list.classList.toggle('open');
-  this.textContent = open ? 'Guardar el secreto' : 'Quiero algo fuera de carta';
+  this.textContent = open ? 'Guardar el secreto' : 'Descubrir el secreto';
 };
 
 // Gallery + lightbox
