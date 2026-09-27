@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Luz y Amor · Cafetería</title>
 <meta name="description" content="Luz y Amor, una cafetería costarricense para leer el día despacio, taza a taza.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -166,7 +171,13 @@ footer{border-top:1px solid var(--line); padding:36px 0; font-size:0.9rem; color
 .lightbox.open img{transform:scale(1)}
 .lightbox button{position:absolute; top:22px; right:24px; background:none; border:0; color:#fff; font-size:1.8rem; cursor:pointer}
 
-@media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} html{scroll-behavior:auto} }
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important; animation:none !important}
+  html{scroll-behavior:auto}
+  /* estos elementos solo llegan a opacity:1 mediante una animación CSS sin fallback en JS;
+     al matar la animación arriba se quedaban congelados en su opacity:0 inicial */
+  .reveal-hero, .menu-list.entering .menu-row, .secret-list.open .secret-item{opacity:1 !important; transform:none !important}
+}
 
 /* WORD REVEAL */
 .word-wrap{overflow:hidden; display:inline-block; vertical-align:top; padding-bottom:0.15em; margin-bottom:-0.15em}
@@ -294,8 +305,8 @@ footer{border-top:1px solid var(--line); padding:36px 0; font-size:0.9rem; color
   <section class="story" id="historia">
     <div class="story-pin">
       <div class="story-media">
-        <img class="story-frame f1" src="images/coffee-pour.jpg" alt="Manos sirviendo café en una taza artesanal" />
-        <img class="story-frame f2" src="images/cafe-detail.jpg" alt="Detalles botánicos sobre una mesa" />
+        <img class="story-frame f1" src="images/coffee-pour.jpg" alt="Manos sirviendo café en una taza artesanal" loading="lazy" />
+        <img class="story-frame f2" src="images/cafe-detail.jpg" alt="Detalles botánicos sobre una mesa" loading="lazy" />
       </div>
       <div class="story-copy">
         <p class="kicker">Cómo abre la casa</p>
@@ -384,7 +395,7 @@ footer{border-top:1px solid var(--line); padding:36px 0; font-size:0.9rem; color
   </div>
 </footer>
 
-<div class="lightbox" id="lightbox">
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagen ampliada">
   <button id="lightboxClose" aria-label="Cerrar">×</button>
   <img id="lightboxImg" src="" alt="">
 </div>
@@ -597,19 +608,26 @@ document.getElementById('secretToggle').onclick = function(){
 
 // Gallery + lightbox
 const grid = document.getElementById('galleryGrid');
+let lastGalleryTrigger = null;
 gallery.forEach(g=>{
   const btn = document.createElement('button');
   btn.innerHTML = `<img src="${g.src}" alt="${g.alt}" loading="lazy">`;
   btn.onclick = () => {
+    lastGalleryTrigger = btn;
     document.getElementById('lightboxImg').src = g.src;
     document.getElementById('lightboxImg').alt = g.alt;
     document.getElementById('lightbox').classList.add('open');
+    document.getElementById('lightboxClose').focus();
   };
   grid.appendChild(btn);
 });
-document.getElementById('lightboxClose').onclick = () => document.getElementById('lightbox').classList.remove('open');
-document.getElementById('lightbox').onclick = (e) => { if(e.target.id==='lightbox') e.currentTarget.classList.remove('open'); };
-window.addEventListener('keydown', e=>{ if(e.key==='Escape') document.getElementById('lightbox').classList.remove('open'); });
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  if(lastGalleryTrigger) lastGalleryTrigger.focus();
+}
+document.getElementById('lightboxClose').onclick = closeLightbox;
+document.getElementById('lightbox').onclick = (e) => { if(e.target.id==='lightbox') closeLightbox(); };
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.getElementById('lightbox').classList.contains('open')) closeLightbox(); });
 
 // Mobile nav
 const burger = document.getElementById('burger');
@@ -617,6 +635,7 @@ const panel = document.getElementById('mobilePanel');
 burger.onclick = () => {
   const open = panel.classList.toggle('open');
   burger.setAttribute('aria-expanded', open);
+  burger.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
 };
 document.querySelectorAll('.mobile-panel a').forEach(a=>a.onclick=()=>panel.classList.remove('open'));
 
